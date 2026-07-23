@@ -1,0 +1,94 @@
+version: 2
+
+sources:
+  - name: clinical
+    database: DBT_SEMANTIC_DEMO
+    schema: CLINICAL
+    description: "Native Snowflake clinical trial and patient data"
+    tables:
+      - name: patients
+        description: "Patient enrollment and demographic records"
+        columns:
+          - name: PATIENT_ID
+            description: "Unique patient identifier"
+          - name: FIRST_NAME
+          - name: LAST_NAME
+          - name: DATE_OF_BIRTH
+          - name: DIAGNOSIS
+          - name: ENROLLMENT_DATE
+          - name: ENROLLING_SITE
+          - name: TRIAL_ID
+
+      - name: adverse_events
+        description: "Adverse events reported during clinical trials"
+        columns:
+          - name: AE_ID
+            description: "Unique adverse event identifier"
+          - name: PATIENT_ID
+          - name: DEVICE_LOT_ID
+          - name: EVENT_DATE
+          - name: SEVERITY
+          - name: DESCRIPTION
+          - name: SUBMITTED_TO_FDA
+          - name: INVESTIGATOR_ID
+          - name: RESOLVED
+
+      - name: clinical_trials
+        description: "Clinical trial registry"
+        columns:
+          - name: TRIAL_ID
+          - name: TRIAL_NAME
+          - name: PHASE
+          - name: INDICATION
+          - name: STATUS
+          - name: START_DATE
+          - name: ESTIMATED_END
+          - name: PRIMARY_ENDPOINT
+          - name: LEAD_INVESTIGATOR_ID
+          - name: ENROLLMENT_TARGET
+
+      - name: device_lots
+        description: "Medical device lot inventory"
+        columns:
+          - name: LOT_ID
+          - name: DEVICE_MODEL
+          - name: DEVICE_FAMILY
+          - name: MANUFACTURE_DATE
+          - name: FACILITY_CODE
+          - name: STATUS
+
+      - name: study_investigators
+        description: "Research investigators"
+        columns:
+          - name: INVESTIGATOR_ID
+          - name: FIRST_NAME
+          - name: LAST_NAME
+          - name: SITE
+          - name: SPECIALTY
+          - name: SNOWFLAKE_ROLE
+
+  - name: device
+    database: DBT_SEMANTIC_DEMO
+    schema: DEVICE
+    description: "Device registry and field-reported adverse events"
+    tables:
+      - name: device_registry
+        description: "Device registry - external source"
+        columns:
+          - name: LOT_ID
+          - name: DEVICE_MODEL
+          - name: MANUFACTURE_DATE
+          - name: FACILITY_CODE
+          - name: STATUS
+          - name: LAST_UPDATED
+
+      - name: adverse_events
+        description: "Device-side adverse event registry"
+        columns:
+          - name: AE_ID
+          - name: PATIENT_REF
+          - name: DEVICE_LOT_ID
+          - name: EVENT_DATE
+          - name: SEVERITY
+          - name: COUNTRY
+          - name: SUBMITTED_TO_FDA

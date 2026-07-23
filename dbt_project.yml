@@ -1,0 +1,32 @@
+name: bleboeuf_dbt_semantic_demo
+version: '1.0.0'
+config-version: 2
+
+profile: default
+
+model-paths: ["models"]
+seed-paths: ["seeds"]
+test-paths: ["tests"]
+analysis-paths: ["analyses"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+docs-paths: ["docs"]
+
+semantic-model-paths: ["semantic_models"]
+metric-paths: ["metrics"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  bleboeuf_dbt_semantic_demo:
+    staging:
+      +schema: CLINICAL
+      +database: DBT_SEMANTIC_DEMO
+      +materialized: view
+    gold:
+      +schema: GOLD
+      +database: DBT_SEMANTIC_DEMO
+      +materialized: table

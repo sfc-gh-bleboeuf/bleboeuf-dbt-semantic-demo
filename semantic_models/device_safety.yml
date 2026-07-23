@@ -1,0 +1,57 @@
+semantic_models:
+  - name: device_safety
+    description: >
+      Device lot safety summary semantic model. Aggregated per-lot safety metrics
+      for post-market surveillance and recall management.
+    model: ref('device_safety_summary')
+
+    entities:
+      - name: device_lot
+        type: primary
+        expr: LOT_ID
+
+    dimensions:
+      - name: most_recent_ae_date
+        type: time
+        type_params:
+          time_granularity: day
+        expr: MOST_RECENT_AE_DATE
+
+      - name: device_model
+        type: categorical
+        expr: DEVICE_MODEL
+
+      - name: lot_status
+        type: categorical
+        expr: STATUS
+        description: "ACTIVE, RECALL, QUARANTINE"
+
+      - name: facility_code
+        type: categorical
+        expr: FACILITY_CODE
+
+    measures:
+      - name: total_ae_count
+        description: "Total adverse events per device lot"
+        agg: sum
+        expr: TOTAL_AE_COUNT
+
+      - name: high_severity_ae_count
+        description: "High severity adverse event count per lot"
+        agg: sum
+        expr: HIGH_SEVERITY_COUNT
+
+      - name: fda_submissions
+        description: "FDA submissions per device lot"
+        agg: sum
+        expr: FDA_SUBMISSIONS
+
+      - name: countries_affected
+        description: "Countries affected per device lot"
+        agg: sum
+        expr: COUNTRIES_AFFECTED
+
+      - name: device_lot_count
+        description: "Number of device lots"
+        agg: count
+        expr: LOT_ID
