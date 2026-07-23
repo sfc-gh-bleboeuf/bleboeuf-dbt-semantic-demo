@@ -86,51 +86,61 @@ semantic_models:
         description: "Total number of adverse events"
         agg: count
         expr: AE_ID
+        agg_time_dimension: event_date
 
       - name: high_severity_count
         description: "Number of HIGH severity adverse events"
         agg: count
         expr: "case when SEVERITY = 'HIGH' then AE_ID end"
+        agg_time_dimension: event_date
 
       - name: medium_severity_count
         description: "Number of MEDIUM severity adverse events"
         agg: count
         expr: "case when SEVERITY = 'MEDIUM' then AE_ID end"
+        agg_time_dimension: event_date
 
       - name: low_severity_count
         description: "Number of LOW severity adverse events"
         agg: count
         expr: "case when SEVERITY = 'LOW' then AE_ID end"
+        agg_time_dimension: event_date
 
       - name: fda_submitted_count
         description: "Number of AEs submitted to FDA"
         agg: count
         expr: "case when SUBMITTED_TO_FDA then AE_ID end"
+        agg_time_dimension: event_date
 
       - name: resolved_count
         description: "Number of resolved adverse events"
         agg: count
         expr: "case when RESOLVED then AE_ID end"
+        agg_time_dimension: event_date
 
       - name: open_high_count
         description: "Number of open HIGH severity adverse events"
         agg: count
         expr: "case when SEVERITY = 'HIGH' and not RESOLVED then AE_ID end"
+        agg_time_dimension: event_date
 
       - name: days_since_event_sum
         description: "Sum of days since each adverse event (for avg calculation)"
         agg: sum
         expr: DAYS_SINCE_EVENT
+        agg_time_dimension: event_date
 
       - name: distinct_patients_affected
         description: "Number of distinct patients with at least one adverse event"
         agg: count_distinct
         expr: PATIENT_ID
+        agg_time_dimension: event_date
 
       - name: distinct_device_models_affected
         description: "Number of distinct device models with adverse events"
         agg: count_distinct
         expr: DEVICE_MODEL
+        agg_time_dimension: event_date
 
   - name: device_safety
     description: >
@@ -168,23 +178,28 @@ semantic_models:
         description: "Total adverse events per device lot"
         agg: sum
         expr: TOTAL_AE_COUNT
+        agg_time_dimension: most_recent_ae_date
 
       - name: high_severity_ae_count
         description: "High severity adverse event count per lot"
         agg: sum
         expr: HIGH_SEVERITY_COUNT
+        agg_time_dimension: most_recent_ae_date
 
       - name: fda_submissions
         description: "FDA submissions per device lot"
         agg: sum
         expr: FDA_SUBMISSIONS
+        agg_time_dimension: most_recent_ae_date
 
       - name: countries_affected
         description: "Countries affected per device lot"
         agg: sum
         expr: COUNTRIES_AFFECTED
+        agg_time_dimension: most_recent_ae_date
 
       - name: device_lot_count
         description: "Number of device lots"
         agg: count
         expr: LOT_ID
+        agg_time_dimension: most_recent_ae_date
