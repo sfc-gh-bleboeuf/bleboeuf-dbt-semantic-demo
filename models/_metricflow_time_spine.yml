@@ -5,4 +5,5 @@ models:
       standard_granularity_column: date_day
     columns:
       - name: date_day
-        description: "Date column used as the MetricFlow time spine at DAY granularity"
+        description: "Date column at DAY granularity"
+        granularity: day
