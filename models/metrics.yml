@@ -1,0 +1,89 @@
+metrics:
+  - name: total_adverse_events
+    description: "Total number of adverse events reported across all clinical trials"
+    label: "Total Adverse Events"
+    type: simple
+    type_params:
+      measure: ae_count
+
+  - name: high_severity_adverse_events
+    description: "Number of adverse events classified as HIGH severity"
+    label: "High Severity AEs"
+    type: simple
+    type_params:
+      measure: high_severity_count
+
+  - name: open_high_severity_events
+    description: "Adverse events that are HIGH severity and NOT yet resolved — active patient safety risk"
+    label: "Open High-Severity AEs"
+    type: simple
+    type_params:
+      measure: open_high_count
+
+  - name: fda_submissions
+    description: "Number of adverse events submitted to the FDA (MedWatch / MDR)"
+    label: "FDA Submissions"
+    type: simple
+    type_params:
+      measure: fda_submitted_count
+
+  - name: patients_with_adverse_events
+    description: "Distinct number of patients who experienced at least one adverse event"
+    label: "Patients Affected"
+    type: simple
+    type_params:
+      measure: distinct_patients_affected
+
+  - name: device_models_with_adverse_events
+    description: "Distinct device models that appear in adverse event reports"
+    label: "Device Models Affected"
+    type: simple
+    type_params:
+      measure: distinct_device_models_affected
+
+  - name: fda_submission_rate
+    description: "Percentage of adverse events that were submitted to the FDA."
+    label: "FDA Submission Rate"
+    type: ratio
+    type_params:
+      numerator: fda_submitted_count
+      denominator: ae_count
+
+  - name: ae_resolution_rate
+    description: "Percentage of adverse events that have been resolved."
+    label: "AE Resolution Rate"
+    type: ratio
+    type_params:
+      numerator: resolved_count
+      denominator: ae_count
+
+  - name: high_severity_rate
+    description: "Proportion of adverse events that are HIGH severity"
+    label: "High Severity Rate"
+    type: ratio
+    type_params:
+      numerator: high_severity_count
+      denominator: ae_count
+
+  - name: total_ae_by_device_lot
+    description: "Total adverse events aggregated by device lot"
+    label: "Total AEs by Device Lot"
+    type: simple
+    type_params:
+      measure: total_ae_count
+
+  - name: high_severity_ae_by_lot
+    description: "High severity adverse events by device lot — key for recall analysis"
+    label: "High Severity AEs by Lot"
+    type: simple
+    type_params:
+      measure: high_severity_ae_count
+
+  - name: device_lots_with_recall_or_quarantine
+    description: "Number of device lots currently in RECALL or QUARANTINE status"
+    label: "Recalled / Quarantined Lots"
+    type: simple
+    type_params:
+      measure: device_lot_count
+    filter: |
+      {{ Dimension('device_lot__lot_status') }} in ('RECALL', 'QUARANTINE')

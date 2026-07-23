@@ -11,8 +11,6 @@ analysis-paths: ["analyses"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 docs-paths: ["docs"]
-semantic-model-paths: ["semantic_models"]
-metric-paths: ["metrics"]
 
 
 target-path: "target"

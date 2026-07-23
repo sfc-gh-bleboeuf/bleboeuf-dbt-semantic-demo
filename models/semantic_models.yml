@@ -1,0 +1,190 @@
+semantic_models:
+  - name: patient_safety
+    description: >
+      360-degree patient safety semantic model. Combines patient enrollment,
+      clinical trial metadata, adverse event records, and device registry data.
+      Used for regulatory reporting, CAPA investigation, and post-market surveillance.
+    model: ref('patient_device_safety_360')
+
+    entities:
+      - name: adverse_event
+        type: primary
+        expr: AE_ID
+
+      - name: patient
+        type: foreign
+        expr: PATIENT_ID
+
+      - name: trial
+        type: foreign
+        expr: TRIAL_ID
+
+      - name: device_lot
+        type: foreign
+        expr: MFG_FACILITY
+
+    dimensions:
+      - name: event_date
+        type: time
+        type_params:
+          time_granularity: day
+        expr: EVENT_DATE
+
+      - name: severity
+        type: categorical
+        expr: SEVERITY
+        description: "Adverse event severity: HIGH, MEDIUM, LOW"
+
+      - name: trial_name
+        type: categorical
+        expr: TRIAL_NAME
+
+      - name: trial_phase
+        type: categorical
+        expr: TRIAL_PHASE
+
+      - name: trial_status
+        type: categorical
+        expr: TRIAL_STATUS
+
+      - name: indication
+        type: categorical
+        expr: INDICATION
+
+      - name: enrolling_site
+        type: categorical
+        expr: ENROLLING_SITE
+
+      - name: device_model
+        type: categorical
+        expr: DEVICE_MODEL
+
+      - name: lot_status
+        type: categorical
+        expr: LOT_STATUS
+        description: "Device lot status: ACTIVE, RECALL, QUARANTINE"
+
+      - name: safety_risk_flag
+        type: categorical
+        expr: SAFETY_RISK_FLAG
+        description: "OPEN_HIGH, CLOSED_HIGH, AFFECTED_LOT, STANDARD"
+
+      - name: submitted_to_fda
+        type: categorical
+        expr: "case when SUBMITTED_TO_FDA then 'Yes' else 'No' end"
+
+      - name: resolved
+        type: categorical
+        expr: "case when RESOLVED then 'Resolved' else 'Open' end"
+
+      - name: mfg_facility
+        type: categorical
+        expr: MFG_FACILITY
+
+    measures:
+      - name: ae_count
+        description: "Total number of adverse events"
+        agg: count
+        expr: AE_ID
+
+      - name: high_severity_count
+        description: "Number of HIGH severity adverse events"
+        agg: count
+        expr: "case when SEVERITY = 'HIGH' then AE_ID end"
+
+      - name: medium_severity_count
+        description: "Number of MEDIUM severity adverse events"
+        agg: count
+        expr: "case when SEVERITY = 'MEDIUM' then AE_ID end"
+
+      - name: low_severity_count
+        description: "Number of LOW severity adverse events"
+        agg: count
+        expr: "case when SEVERITY = 'LOW' then AE_ID end"
+
+      - name: fda_submitted_count
+        description: "Number of AEs submitted to FDA"
+        agg: count
+        expr: "case when SUBMITTED_TO_FDA then AE_ID end"
+
+      - name: resolved_count
+        description: "Number of resolved adverse events"
+        agg: count
+        expr: "case when RESOLVED then AE_ID end"
+
+      - name: open_high_count
+        description: "Number of open HIGH severity adverse events"
+        agg: count
+        expr: "case when SEVERITY = 'HIGH' and not RESOLVED then AE_ID end"
+
+      - name: days_since_event_sum
+        description: "Sum of days since each adverse event (for avg calculation)"
+        agg: sum
+        expr: DAYS_SINCE_EVENT
+
+      - name: distinct_patients_affected
+        description: "Number of distinct patients with at least one adverse event"
+        agg: count_distinct
+        expr: PATIENT_ID
+
+      - name: distinct_device_models_affected
+        description: "Number of distinct device models with adverse events"
+        agg: count_distinct
+        expr: DEVICE_MODEL
+
+  - name: device_safety
+    description: >
+      Device lot safety summary semantic model. Aggregated per-lot safety metrics
+      for post-market surveillance and recall management.
+    model: ref('device_safety_summary')
+
+    entities:
+      - name: device_lot
+        type: primary
+        expr: LOT_ID
+
+    dimensions:
+      - name: most_recent_ae_date
+        type: time
+        type_params:
+          time_granularity: day
+        expr: MOST_RECENT_AE_DATE
+
+      - name: device_model
+        type: categorical
+        expr: DEVICE_MODEL
+
+      - name: lot_status
+        type: categorical
+        expr: STATUS
+        description: "ACTIVE, RECALL, QUARANTINE"
+
+      - name: facility_code
+        type: categorical
+        expr: FACILITY_CODE
+
+    measures:
+      - name: total_ae_count
+        description: "Total adverse events per device lot"
+        agg: sum
+        expr: TOTAL_AE_COUNT
+
+      - name: high_severity_ae_count
+        description: "High severity adverse event count per lot"
+        agg: sum
+        expr: HIGH_SEVERITY_COUNT
+
+      - name: fda_submissions
+        description: "FDA submissions per device lot"
+        agg: sum
+        expr: FDA_SUBMISSIONS
+
+      - name: countries_affected
+        description: "Countries affected per device lot"
+        agg: sum
+        expr: COUNTRIES_AFFECTED
+
+      - name: device_lot_count
+        description: "Number of device lots"
+        agg: count
+        expr: LOT_ID
